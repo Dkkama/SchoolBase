@@ -1,3 +1,6 @@
+using System.Data.SqlClient;
+using System.Xml.Linq;
+
 namespace SchoolBase
 {
     public partial class Form1 : Form
@@ -13,10 +16,10 @@ namespace SchoolBase
             string password = textBoxPassword.Text;
             bool check = checkBoxRemember.Checked;
 
-            mainForm form = new mainForm(name, password, check);
-            form.ShowDialog();
-
             User user = new User(name, password);
+
+            Verification();
+            
         }
 
         private void checkBoxRemember_CheckedChanged(object sender, EventArgs e)
@@ -27,9 +30,35 @@ namespace SchoolBase
             Properties.Settings.Default.Save();*/
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void Verification()
         {
+            User user = new User(Name, Password); // ERROR
 
+            string connetionString = @"Data Source=LAPTOP-KAMILYA\SQLEXPRESS;Initial Catalog=SchoolBase;Integrated Security=True";
+            SqlConnection cnn = new SqlConnection(connetionString);
+            cnn.Open();
+
+            string sqlVerify = "Select username, password from LogIn";
+            SqlCommand command = new SqlCommand(sqlVerify, cnn);
+
+            SqlDataReader dataReader = command.ExecuteReader();
+            while (dataReader.Read())
+            {
+                if (user.Name == dataReader.GetString(0) && user.Password == dataReader.GetString(1))
+                {
+                    MessageBox.Show("Access");
+                    mainForm form = new mainForm(user.Name, user.Password, connetionString);
+                    form.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("No access, try again");
+                }
+            }
+
+            cnn.Close();
+            command.Dispose();
+            dataReader.Close();
         }
     }
 }
