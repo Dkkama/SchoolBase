@@ -14,18 +14,17 @@ namespace SchoolBase
 {
     public partial class mainForm : Form
     {
-        public mainForm(string Name, string Password, bool check)
+        public mainForm(string userName, string userPassword, string connetionString) // bool check
         {
             InitializeComponent();
-
-            label1.Text = Name;
+            /*label1.Text = Name;
             label2.Text = Password;
+            label3.Text = (check) ? "Checked)" : "Unchecked)";*/
 
-            label3.Text = (check) ? "Checked)" : "Unchecked)";
+            label1.Text = userName;
+            label2.Text = userPassword;
+
         }
-        SqlConnection conn = new SqlConnection(@"Data Source=LAPTOP-Kamilya\SQLEXPRESS;Initial Catalog=SchoolBase;Integrated Security=True");
-        // Connecting SQL
-        // ERROR
     }
     
 }
