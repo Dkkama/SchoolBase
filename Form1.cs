@@ -18,8 +18,8 @@ namespace SchoolBase
 
             User user = new User(name, password);
 
-            Verification();
-            
+            Verification(user);
+
         }
 
         private void checkBoxRemember_CheckedChanged(object sender, EventArgs e)
@@ -30,10 +30,8 @@ namespace SchoolBase
             Properties.Settings.Default.Save();*/
         }
 
-        private void Verification()
+        private void Verification(User user) // pass the class totally
         {
-            User user = new User(Name, Password); // ERROR
-
             string connetionString = @"Data Source=LAPTOP-KAMILYA\SQLEXPRESS;Initial Catalog=SchoolBase;Integrated Security=True";
             SqlConnection cnn = new SqlConnection(connetionString);
             cnn.Open();
@@ -46,13 +44,32 @@ namespace SchoolBase
             {
                 if (user.Name == dataReader.GetString(0) && user.Password == dataReader.GetString(1))
                 {
-                    MessageBox.Show("Access");
                     mainForm form = new mainForm(user.Name, user.Password, connetionString);
                     form.ShowDialog();
                 }
                 else
                 {
                     MessageBox.Show("No access, try again");
+                    panelMove.Location = new Point(panelMove.Location.X, panelMove.Location.Y + 35);
+
+                    /*int DistanceUnit = 1; // Method 1: create a label in the code   !GroupBox covers the label!
+                    Label wrongUser = new Label();
+                    this.Controls.Add(wrongUser); // Adding the lavel itselt
+
+                    wrongUser.Top = DistanceUnit * 600;
+                    wrongUser.Left = DistanceUnit * 600;
+                    DistanceUnit = DistanceUnit + 1;
+
+                    wrongUser.ForeColor = Color.Red;
+                    wrongUser.AutoSize = true;
+                    wrongUser.TextAlign = ContentAlignment.MiddleCenter;
+                    wrongUser.Visible = true;
+                    wrongUser.Text = "Wrong username or password, please try again :(";*/
+
+
+                    wrongUser.Visible = true; // Method 2: hide the label and make it visible on click   !Intersects with the panelMove and also moves!
+                    wrongUser.Location = new Point(wrongUser.Location.X, panelMove.Location.Y + 1);
+
                 }
             }
 
@@ -60,5 +77,7 @@ namespace SchoolBase
             command.Dispose();
             dataReader.Close();
         }
+
+
     }
 }
